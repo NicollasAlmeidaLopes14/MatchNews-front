@@ -2,6 +2,7 @@ import { MdOutlineArticle } from 'react-icons/md'
 import { useEffect, useState } from 'react'
 
 import NewsListingCard from '../../components/NewsListingCard'
+import NewsEditModal from '../../components/NewsEditModal'
 import SiteHeader from '../../components/SiteHeader'
 
 import tacticalAnalysisImage from '../../assets/analise-tatica.png'
@@ -29,6 +30,7 @@ const getCategoryImage = (category) => {
 
 function NewsListing() {
     const [news, setNews] = useState([])
+    const [newsBeingEdited, setNewsBeingEdited] = useState(null)
 
     useEffect(() => {
         const listarNoticias = async () => {
@@ -45,6 +47,37 @@ function NewsListing() {
         }
         listarNoticias()
     }, [])
+
+    const atualizarNoticia = async (id, updatedNews) => {
+        try {
+            const response = await fetch(
+                `http://localhost:8080/noticias/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': "application/json" },
+                body: JSON.stringify(updatedNews)
+            }
+            )
+
+            if (!response.ok) throw new Error("Erro HTTP: " + response.status);
+
+            const updatedNewsFromBackend = await response.json()
+
+            setNews((currentNews) =>
+                currentNews.map((n) =>
+                    n.id === id ? updatedNewsFromBackend : n
+                )
+            )
+
+            setNewsBeingEdited(null)
+
+            toast.success("Notícia atualizada com sucesso!")
+            return updatedNewsFromBackend
+        } catch (error) {
+            console.error(`Erro ao editar notícia: ${error}`)
+            toast.error("Não foi possível editar a notícia!")
+            return
+        }
+    }
 
     const deletarNoticia = async (id) => {
         try {
@@ -122,14 +155,22 @@ function NewsListing() {
                             category={n.categoria}
                             author={n.autor}
                             publishedAt={n.dataPublicacao}
+                            updatedAt={n.dataAtualizacao}
                             img={getCategoryImage(n.categoria)}
                             imgAlt={n.categoria}
                             featured={news[0] == n}
+                            editar={() => setNewsBeingEdited(n)}
                             deletar={() => deletarNoticia(n.id)}
                         />
                     ))}
                 </div>
             </main>
+
+            <NewsEditModal
+                news={newsBeingEdited}
+                onClose={() => setNewsBeingEdited(null)}
+                onSubmit={atualizarNoticia}
+            />
         </div>
     )
 }

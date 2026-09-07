@@ -1,4 +1,4 @@
-import { MdAccessTime, MdDeleteOutline, MdPersonOutline } from 'react-icons/md'
+import { MdAccessTime, MdDeleteOutline, MdEdit, MdPersonOutline } from 'react-icons/md'
 
 import styles from './styles.module.css'
 
@@ -7,9 +7,11 @@ function NewsListingCard({
     img,
     imgAlt = '',
     publishedAt,
+    updatedAt,
     author,
     title,
     summary,
+    editar,
     deletar,
     featured = false,
 }) {
@@ -19,21 +21,37 @@ function NewsListingCard({
                 <img className={styles.image} src={img} alt={imgAlt} />
                 <span className={styles.categoryBadge}>{category}</span>
 
-                <button onClick={deletar}
-                    className={styles.deleteButton}
-                    type="button"
-                    aria-label={`Excluir a notícia "${title}"`}
-                >
-                    <MdDeleteOutline aria-hidden="true" />
-                    Excluir
-                </button>
+                <div className={styles.cardActions}>
+                    <button
+                        className={styles.editButton}
+                        type="button"
+                        onClick={editar}
+                        aria-label={`Editar a notícia "${title}"`}
+                    >
+                        <MdEdit aria-hidden="true" />
+                    </button>
+
+                    <button
+                        onClick={deletar}
+                        className={styles.deleteButton}
+                        type="button"
+                        aria-label={`Excluir a notícia "${title}"`}
+                    >
+                        <MdDeleteOutline aria-hidden="true" />
+                    </button>
+                </div>
             </div>
 
             <div className={styles.content}>
                 <div className={styles.metadata}>
                     <span>
                         <MdAccessTime aria-hidden="true" />
-                        {publishedAt}
+                        {
+                            updatedAt != null ?
+                                `Atualizado em: ${updatedAt}`
+                                :
+                                `Publicado em: ${publishedAt}`
+                        }
                     </span>
                 </div>
 

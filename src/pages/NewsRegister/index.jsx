@@ -57,8 +57,12 @@ function NewsRegister() {
 
 
             const dados = await response.json();
-
             toast.success("Notícia publicada com sucesso!")
+
+            setTimeout(() => {
+                navigate('/')
+            }, 2000)
+
             return dados
         } catch (error) {
             console.error("Erro ao publicar a notícia: " + error)

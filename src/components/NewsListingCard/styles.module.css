@@ -61,28 +61,44 @@
     backdrop-filter: blur(6px);
 }
 
-.deleteButton {
+.cardActions {
     position: absolute;
     z-index: 2;
     top: 12px;
     right: 12px;
     display: inline-flex;
-    min-height: 34px;
+    gap: 7px;
+}
+
+.editButton,
+.deleteButton {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    padding: 0 11px;
+    padding: 0;
     border: 1px solid rgba(185, 28, 28, 0.2);
     border-radius: 9px;
     color: #a61b1b;
     background: rgba(255, 255, 255, 0.92);
     font: inherit;
-    font-size: 11px;
-    font-weight: 750;
     cursor: pointer;
     backdrop-filter: blur(6px);
     box-shadow: 0 5px 14px rgba(7, 26, 47, 0.12);
     transition: color 160ms ease, background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.editButton {
+    border-color: rgba(8, 122, 67, 0.2);
+    color: #087a43;
+}
+
+.editButton:hover {
+    border-color: #087a43;
+    color: #ffffff;
+    background: #087a43;
+    transform: translateY(-1px);
 }
 
 .deleteButton:hover {
@@ -92,8 +108,14 @@
     transform: translateY(-1px);
 }
 
+.editButton:active,
 .deleteButton:active {
     transform: translateY(0);
+}
+
+.editButton:focus-visible {
+    outline: 3px solid rgba(8, 122, 67, 0.28);
+    outline-offset: 3px;
 }
 
 .deleteButton:focus-visible {
@@ -101,6 +123,7 @@
     outline-offset: 3px;
 }
 
+.editButton svg,
 .deleteButton svg {
     font-size: 17px;
 }
@@ -230,6 +253,7 @@
 @media (prefers-reduced-motion: reduce) {
     .card,
     .image,
+    .editButton,
     .deleteButton {
         transition: none;
     }
