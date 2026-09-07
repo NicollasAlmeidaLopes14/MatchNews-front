@@ -13,7 +13,10 @@ import {
 
 import NewsRegisterForm from '../../components/NewsRegisterForm'
 import FormField from '../../components/FormField'
+import Loading from '../../components/Loading'
+
 import styles from './styles.module.css'
+
 import { useState } from 'react'
 
 const categoryOptions = [
@@ -32,11 +35,14 @@ function NewsRegister() {
     const [category, setCategory] = useState('');
     const [author, setAuthor] = useState('');
     const [source, setSource] = useState('');
+    const [loadingMessage, setLoadingMessage] = useState(null)
 
 
     const navigate = useNavigate();
 
     const publicarNoticia = async () => {
+        setLoadingMessage('Publicando notícia...')
+
         try {
             const response = await fetch(
                 "http://localhost:8080/noticias", {
@@ -59,17 +65,22 @@ function NewsRegister() {
             const dados = await response.json();
             toast.success("Notícia publicada com sucesso!")
 
-            setTimeout(() => {
-                navigate('/')
-            }, 2000)
+            setLoadingMessage("Redirecionado para as notícias...")
+
+            await new Promise((resolve) => {
+                setTimeout(resolve, 2000)
+            })
+
+            navigate('/')
 
             return dados
         } catch (error) {
             console.error("Erro ao publicar a notícia: " + error)
             toast.error("Não foi possível publicar a notícia")
+            setLoadingMessage(null)
+
             return null
         }
-
     }
 
     const handleSubmit = async (event) => {
@@ -79,6 +90,7 @@ function NewsRegister() {
 
     return (
         <div className={styles.page}>
+            <Loading message={loadingMessage} />
             <ToastContainer autoClose={3000} hideProgressBar />
 
             <header className={styles.header}>

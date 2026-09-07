@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 import NewsListingCard from '../../components/NewsListingCard'
 import NewsEditModal from '../../components/NewsEditModal'
+import Loading from '../../components/Loading'
 import SiteHeader from '../../components/SiteHeader'
 
 import tacticalAnalysisImage from '../../assets/analise-tatica.png'
@@ -31,6 +32,7 @@ const getCategoryImage = (category) => {
 function NewsListing() {
     const [news, setNews] = useState([])
     const [newsBeingEdited, setNewsBeingEdited] = useState(null)
+    const [loadingMessage, setLoadingMessage] = useState('Carregando notícias...')
 
     useEffect(() => {
         const listarNoticias = async () => {
@@ -43,12 +45,16 @@ function NewsListing() {
                 setNews(dados)
             } catch (error) {
                 console.error(`Erro ao listar notícias: ${error}`)
+            } finally {
+                setLoadingMessage(null)
             }
         }
         listarNoticias()
     }, [])
 
     const atualizarNoticia = async (id, updatedNews) => {
+        setLoadingMessage('Atualizando notícia...')
+
         try {
             const response = await fetch(
                 `http://localhost:8080/noticias/${id}`, {
@@ -76,10 +82,14 @@ function NewsListing() {
             console.error(`Erro ao editar notícia: ${error}`)
             toast.error("Não foi possível editar a notícia!")
             return
+        } finally {
+            setLoadingMessage(null)
         }
     }
 
     const deletarNoticia = async (id) => {
+        setLoadingMessage('Excluindo notícia...')
+
         try {
             const response = await fetch(
                 `http://localhost:8080/noticias/${id}`,
@@ -98,11 +108,14 @@ function NewsListing() {
         } catch (error) {
             console.error("Erro ao deletar notícia", error)
             toast.error("Não foi possível deletar a notícia")
+        } finally {
+            setLoadingMessage(null)
         }
     }
 
     return (
         <div className={styles.page}>
+            <Loading message={loadingMessage} />
             <SiteHeader />
             <ToastContainer autoClose={3000} hideProgressBar />
 
